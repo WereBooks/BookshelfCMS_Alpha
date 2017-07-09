@@ -1,0 +1,56 @@
+/* Size overrides for the container */
+.container {
+  /*max-width: 28rem;*/
+  padding-left:  1rem;
+  padding-right: 1rem;
+  margin-left:  auto;
+  margin-right: auto;
+}
+@media (min-width: 38em) {
+  .container {
+    max-width: 32rem;
+  }
+}
+@media (min-width: 46em) {
+  .container {
+    max-width: 45rem;
+  }
+}
+@media (min-width: 70em) {
+  .container {
+    max-width: 62rem;
+  }
+}
+@media (min-width: 90em) {
+  .container {
+    max-width: 82rem;
+  }
+}
+/* Layout overrides for the page/post for the floating view */
+h3{ font-size: 1.25rem; }
+.page{ margin-bottom: 0;} 
+.posts {
+  display: -webkit-flex; /* Safari */
+  -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+  display: flex;
+  flex-wrap: wrap;
+  flex-flow: row wrap;
+  flex-direction: row ;
+  flex-wrap: wrap ;
+  justify-content: center ;
+  align-content: center ;
+  align-items: center ;
+  margin-bottom: 0;
+}
+figure{ 
+  margin-left: 1rem; 
+  margin-right: 1rem;
+  margin-bottom: 1.7rem;
+}
+.author {
+  font-size: 0.9em;
+  padding-left:20%;
+  padding-right:20%;
+  padding-top: 5em;
+  text-indent: 1.5em;
+}

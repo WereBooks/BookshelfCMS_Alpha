@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " vocab="http://ogp.me/ns" lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width">
+		<title>[% config.author.name %] | [% config.site %]</title>		
+		<link rel="stylesheet" href="[% config.rootstyle %]" type="text/css">
+		<link rel="stylesheet" href="[% style %]" type="text/css">
+		<link rel="canonical" href="[% config.siteroot %][% config.author.url %]">
+		<link rel="shortcut icon" href="[% config.siteroot %]favicon-192x192.png" sizes="192x192">
+		<link rel="shortcut icon" href="[% config.siteroot %]favicon-57x57.png" sizes="57x57">
+		<link rel="apple-touch-icon" href="[% config.siteroot %]apple-touch-icon-57x57.png" sizes="57x57">
+		<link rel="apple-touch-icon" href="[% config.siteroot %]apple-touch-icon-72x72.png" sizes="72x72">
+		<link rel="apple-touch-icon" href="[% config.siteroot %]apple-touch-icon-114x114.png" sizes="114x114">
+		<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]-->
+		<meta name="author" content="[% config.author.name %]">
+		<meta name="description" content="[% config.site %] author site: [% config.author.name %]">
+		<meta name="twitter:description" content="[% config.site %] author site: [% config.author.name %]">
+		<meta name="twitter:image" content="[% config.siteroot %][% config.author.url %][% config.imagepath %][% author.portrait %]">
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:site" content="[% config.twitter %]">
+		<meta name="twitter:creator" content="[% config.author.twitter %]">				
+		<meta property="og:site_name" content="[% config.site %]">
+		<meta property="og:image" content="[% config.siteroot %][% config.author.url %][% config.imagepath %][% author.portrait %]">
+		<meta property="og:title" content="[% config.author.name %]">
+		<meta property="og:url" content="[% config.siteroot %][% config.author.url %]">
+		<meta property="og:description" content="[% config.site %] author site: [% config.author.name %]">
+		<meta property="og:type" content="books.author">
+		<meta property="article:published_time" content="[% date %]">	
+		[%- IF config.metadata %][% config.metadata %][%- END %]
+		[%- IF config.author.metadata %][% config.author.metadata %][%- END %]
+	</head>
+	<body>
+    	<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    	<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular styles, `#sidebar-checkbox` for behavior. -->
+    	<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox"><!-- Toggleable sidebar --><div class="sidebar" id="sidebar">
+        <div class="sidebar-item">
+            <p>Works by [% config.author.name %]</p>
+        </div>        
+    	<nav id="menu" role="navigation" class="sidebar-nav">
+    		[% FOREACH genre = genres.keys.sort -%]<a class="sidebar-nav-item" href="#">[% genre FILTER ucfirst %]</a>[% FOREACH book = author.books.keys.sort -%][% IF author.books.$book.genre1 == genre -%][% IF author.books.$book.link.defined %][% link = author.books.$book.link %][% ELSE %][% link = config.siteroot _ author.books.$book.url %][% END %]
+    			<a class="sidebar-nav-item subitem" href="[% link %]">[% book %][% IF author.books.$book.subtitle %] : [% author.books.$book.subtitle %][% END -%]</a>
+			[% END -%][% END -%]
+[% END -%]<a class="sidebar-nav-item" href="#"><i>Similar Authors:</i></a>
+    			[% FOREACH related = author.related.sort -%][% related %][% END %]
+    		<a class="sidebar-nav-item" href="[% config.siteroot %]">Home</a>       
+    		<div class="searchform" role="search">
+ 				<!-- DuckDuckGo custom search -->
+ 				<form method="get" id="search" action="//duckduckgo.com/" class="sidebar-item navbar-form" role="search">
+ 				<input type="hidden" name="sites" value="[% config.siteroot %]"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+				</form>
+ 				<!-- End of custom search -->
+			</div>   
+    	</nav><div class="infos" style="padding-top:1rem;padding-bottom:1rem;">
+			[% library.sitecopy %]<br />[% config.author.copyright %]<br />Views and terms expressed in these books are not representative of [% config.site %], and are to be taken in context.</p>
+		</div>
+	</div>
+	<div class="wrap">
+		<div class="masthead">
+        	<div class="container"><h3 id="brand" class="masthead-title"><a href="[% config.siteroot %]">[% config.site %]: </a><a href="[% config.siteroot %][% config.author.url %]" title="[% config.author.name %]" rel="home">[% config.author.name %]</a></h3></div>
+        </div>
+		<div class="container content" id="content">

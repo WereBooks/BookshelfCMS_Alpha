@@ -1,0 +1,30 @@
+[% INCLUDE book_header.tmpl %]
+		<article class="post h-entry post-text postpage post-text" itemscope="itemscope" itemtype="http://schema.org/Article">
+    		<header>
+    			<div class="metadata">
+    				<span class="dateline"><a href="[% config.siteroot %][% book.chapters.$chapter.url %]" rel="bookmark"><time class="post-date published dt-published" datetime="[% date %]" title="[% date %]"></time></a></span>
+        			<div class="post-title p-name entry-title" itemprop="headline name"><span class="pageheading" title="Book Page"><a href="[% config.siteroot %][% config.book.url %]" class="u-url">[% config.book.title %]</a></span></div>
+        			<div class="post-title byline author vcard" itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="pageauthor byline-name fn" itemprop="name" title="Author Page"><a href="[% config.siteroot %][% config.author.url %]">[% config.author.name %]</a></span></div>
+        		</div>
+    		</header><br />
+    		<div class="e-content entry-content" itemprop="articleBody text">
+				<div id="chapter_[% config.book.chapter %]" class="toc">
+					<h2 class="toc chapter post-title p-name entry-title">[% config.book.chapname %]</h2>
+						<p><a href="[% config.siteroot %][% config.book.url %]cover/">Cover Page</a></p>
+						<p><a href="[% config.siteroot %][% book.front.url %]">Front Matter</a></p>
+						[%- FOREACH chapter = book.chapters.keys.nsort -%][% IF chapter < 1 %][% NEXT %][% END %][% IF chapter > 100 %][% NEXT %][% END %]
+						<p><a href="[% config.siteroot %][% book.chapters.$chapter.url %]">[% book.chapters.$chapter.chapname %][% IF book.chapters.$chapter.subchapter %] : [% book.chapters.$chapter.subchapter %][% END -%]</a></p>
+    				[%- END %]
+				</div>
+			</div>
+		</article>
+		<ul class="pager hidden-print">
+			<li class="previous"><a href="../../../[% config.book.prev.url %]" rel="next" title="[% config.book.prev.chapname %]">Previous</a></li>
+			<li class="next"><a href="../../../[% config.book.url %]" rel="prev" title="[% config.book.title %]">Next</a></li>			
+		</ul>
+	</div>
+	</div>
+	<br />
+	<label for="sidebar-checkbox" class="sidebar-toggle"></label>
+	</body>
+[% INCLUDE book_footer.tmpl %]

@@ -1,0 +1,23 @@
+[%  INCLUDE author_header.tmpl %]
+			<div class="author" itemscope="itemscope" itemtype="http://schema.org/author">
+				<img class="portrait" src="[% config.imagepath %][% author.portrait %]" alt="[% config.author.name %]">
+				<div id="about" class="p-name p-author h-card" title="[% config.author.name %]">
+					[% author.about %]
+				</div>
+				<hr />
+			</div>
+			<div class="posts">
+				[% FOREACH book = author.books.keys.sort %]
+    			<figure class="post h-entry post-text book" itemscope="itemscope" itemtype="http://schema.org/Book">
+    				<div class="e-content entry-content">[% IF author.books.$book.link.defined %][% link = author.books.$book.link %][% ELSE %][% link = '../' _ author.books.$book.url %][% END %]
+    					<a href="[% link %]"><figure [% author.book.$book.coverstyle %]><img class="cover" src="../[% author.books.$book.url %][% config.imagepath %][% author.book.$book.cover %]" alt="[% book %]" title="[% author.books.$book.hover %]"></figure></a>
+    				</div>
+    				<figcaption><a href="[% link %]" class="u-url"><h3 class="post-title p-name name">[% book %]</h3></a></figcaption>
+				</figure>
+				[% END %]
+			</div>
+		</div>
+	</div>
+	<label for="sidebar-checkbox" class="sidebar-toggle"></label>
+	</body>
+[% INCLUDE book_footer.tmpl %]

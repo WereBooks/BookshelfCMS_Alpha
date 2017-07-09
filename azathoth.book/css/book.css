@@ -1,0 +1,134 @@
+@namespace "http://www.w3.org/1999/xhtml";
+@namespace epub "http://www.idpf.org/2007/ops";
+/* General */
+@font-face {
+    font-family: "Slabo13px-Regular";
+    font-weight: normal;
+    font-style: normal;
+    src: local('Slabo 13px'), local('Slabo13px-Regular'), url(https://fonts.gstatic.com/s/slabo13px/v3/B9U01_cNwYDvIHK04hXMriEAvth_LlrfE80CYdSH47w.woff2) format('woff2'), url(https://fonts.gstatic.com/s/slabo13px/v3/fScGOqovO8xyProgHURSR_k_vArhqVIZ0nv9q090hN8.woff2) format('woff2'), url("/fonts/Slabo13px-Regular.ttf");
+}
+p.first { 
+    text-indent: 0; 
+    display: block;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 3em;
+    text-align: justify;
+}
+.bookcover { max-width: 99%;}
+@media (min-width: 20em) {
+  .masthead-title { font-size: 1.2rem; }
+  .masthead-title { padding-left: 2rem; }
+}
+@media (min-width: 38em) {
+  .container {
+    max-width: 32rem;
+  }
+}
+@media (min-width: 56em) {
+  .container {
+    max-width: 50rem;
+  }
+  .masthead-title { padding-left: 3rem; }
+}
+div.centered {
+    padding-left: 20%;
+    padding-right: 20%;
+    text-align: center;
+}
+@media screen and (max-width: 480px) {
+  div.centered {
+    padding-left: 5%;
+    padding-right: 5%;
+    text-align: center;
+  }
+}
+.body {
+    display: block;
+    font-family: Slabo13px-Regular, serif;
+    font-size: 1em;
+    margin-bottom: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 0;
+}
+h1 h2 h3 h4 {
+    text-align:center; 
+    font-variant: small-caps;
+    text-align: center;
+    padding-top: 1em;
+}
+.chapter {
+    color: black;
+    font-size: 2em;
+    text-align: center;
+    margin-top: 1em;
+    font-variant: small-caps;
+    text-indent: 0;
+}
+.title { 
+    font-size: 2.5em; 
+    padding-top: 1em;
+    display: block;
+    line-height: 1.2;
+    text-align: center;
+    text-indent: 0;
+}
+.pageheading {
+    font-size: 1em;
+    float: right;
+    font-variant: small-caps;
+}
+.pageauthor {
+    font-size: 1em;
+    float: left;
+    font-variant: small-caps;
+}
+li.next {
+    font-size: 1em;
+    float: right;
+    font-variant: small-caps;
+    list-style: none;
+}
+li.previous {
+    font-size: 1em;
+    float: left;
+    margin-left: -2em;
+    font-variant: small-caps;
+    list-style: none;
+}
+#footer { margin-top: 3em; }
+.donations{ padding-top: 0; }
+.toc {
+    text-align: center;
+    font-variant: small-caps;
+    text-indent: 0;
+}
+.letter_body {
+    display: block;
+    padding-left: 10%;
+    padding-right: 10%;
+    line-height: 1.2em;
+}
+div.entry-content { text-indent: 1.5em; }
+.infos{ text-indent: 0; }
+
+/* Book Specific */
+.dropcap {
+    font-size: 3.5em;
+    text-shadow: 0.03em 0.03em 0.03em gray;
+    display: inline-block;
+    text-indent: 0;
+    float: left;
+    line-height : 0.5;
+    margin: 0.2em 0.1em 0 0;
+}
+
+.chapter { font-family: Gabriola, sans-serif; }
+@font-face {
+    font-family: "Gabriola";
+    font-weight: normal;
+    font-style: normal;
+    src: url("/fonts/Gabriola.ttf");
+}
+

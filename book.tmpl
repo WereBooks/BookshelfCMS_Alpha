@@ -1,0 +1,42 @@
+[%  INCLUDE book_header.tmpl %]
+			<div class="posts">
+				[% FOREACH chapter = book.chapters.keys.nsort %][% IF book.chapters.$chapter.chapname == 'Table of Contents' -%][% NEXT %][% END -%]
+    			<article class="post h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article">
+    				<header>
+    					<div class="p-name p-author h-card" title="[% config.author.name %]">
+							<span class="dateline"><a href="[% config.siteroot %][% book.chapters.$chapter.url %]" rel="bookmark"><time class="post-date published dt-published" datetime="[% date %]" title="[% date %]"></time></a></span>
+        				</div>
+    				</header>
+    				[% IF book.chapters.$chapter.chapname == 'cover' -%]<h2 class="chapter post-title p-name u-url"><span style="visibility:hidden">-</span></h2>
+    					<div class="p-summary entry-summary"><a href="../../[% book.front.url %]"><img class="bookcover container content" alt="[% config.book.title %]" src="[% config.imagepath %][% config.book.cover %]" title="[% config.book.title %]" /></a></div>[% ELSE %]    				
+    				<h2 class="chapter post-title p-name u-url"><a href="../../[% book.chapters.$chapter.url %]">[% IF book.chapters.$chapter.chapname == '' -%]<span style="visibility:hidden">-</span>[% ELSE %][% book.chapters.$chapter.chapname %][% END -%]</a></h2>
+    				<div class="p-summary entry-summary">		
+						[% book.chapters.$chapter.teaser %]
+						[% IF book.chapters.$chapter.more == '1' %]<a href="../../[% book.chapters.$chapter.url %]">Read More...</a></div>[% END -%]		
+    				</div>[% END %]
+				</article>
+				[% END %]
+				<article class="post h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article">
+    				<header>
+    					<div class="p-name p-author h-card" title="[% config.author.name %]">
+							<span class="dateline"><a href="[% config.siteroot %][% book.chapters.$chapter.url %]" rel="bookmark"><time class="post-date published dt-published" datetime="[% date %]" title="[% date %]"></time></a></span>
+        				</div>
+    				</header>
+    				<h2 class="chapter post-title p-name u-url"><a href="../../toc/index.html">Table of Contents</a></h2>
+    				<div class="p-summary entry-summary">
+    					<div id="chapter_toc" class="toc">
+								<p><a href="[% config.siteroot %][% config.book.url %]cover/">Cover Page</a></p>
+								<p><a href="[% config.siteroot %][% book.front.url %]">Front Matter</a></p>
+								[% FOREACH chap = book.chapters.keys.nsort -%][% IF chap < 1 -%][% NEXT %][% END -%]
+								<p><a href="[% config.siteroot %][% book.chapters.$chapter.url %]">[% book.chapters.$chap.chapname %][% IF book.chapters.$chapter.subchapter %] : [% book.chapters.$chapter.subchapter %][% END -%]</a></p>
+    						[%- END %]
+				</div>
+    				</div>
+				</article> 				
+			</div>
+		</div>
+	</div>
+	<br />
+	<label for="sidebar-checkbox" class="sidebar-toggle"></label>
+	</body>
+[% INCLUDE book_footer.tmpl %]
