@@ -31,6 +31,7 @@ if ( $result{'version'} eq "" ){ die( "Library issue: $!"); }
 setSiteroot('https://yoursite.org/');
 setTwitter('@yoursite');
 setSite('yoursite');
+setLogo('yourlogo.svg');
 setSitecopy('<figure><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img class="logo" alt="Creative Commons License" src="https://yoursite.org/images/cc-by-sa.svg" width="80"></a>
 </figure><p><a property="cc:attributionName" href="https://yoursite.org">yoursite.org Editions</a><br>are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.');
 setStylepath('css/');
@@ -94,7 +95,7 @@ foreach my $dir ( @ARGV ){
 }
 
 	
-if( writeBook() ){ print "Book Site written"; }
+if( writeBook() ){ print "Site written\n"; }
 if( !writeAuthor() ){ die( "Unable to update the author site: $!"); }
 if( !updateLibrary() ){ die( "Unable to save changes to library: $!"); }
 

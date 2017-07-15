@@ -1,7 +1,7 @@
 package BookshelfCMSLibrarian;
 
 # Bookshelf CMS is Copyright 2017 WereBooks Limited, and licensed for public use via the Apache License, Version 2.0
-# See: https://opensource.org/licenses/Apache-2.0 for the terms, or the project license file: https://github.com/WereBooks/BookshelfCMS_Alpha/blob/master/LICENSE
+# See: https://opensource.org/licenses/Apache-2.0 for the terms, or the project license file: https://github.com/WereBooks/alpha/blob/master/LICENSE
 # Replace "yoursite" and "yoursite.org" with your site
 use strict;
 use Exporter qw(import);
@@ -46,7 +46,7 @@ our $_chapter		= '1';
 our $_chapname		= 'Chapter 1';
 our $_subchapter	= '';
 our $_divider		= '';
-our $_genre1		= 'Adventure';
+our $_genre1		= 'adventure';
 our $_genre2		= '';
 our $_genre3		= '';
 our $_genre4		= '';
@@ -59,6 +59,7 @@ our $_copyright;
 our %_library;
 our %_config;
 our %_book;
+our $_page;
 
 
 
@@ -105,7 +106,10 @@ sub initChapter {
 	readConfig( <$__fh> );
 	close $__fh;
 	
-	# Doing a concat so that we can, theoretically, handle unix or windows output paths. Also different if useindex: chapter-1.html or chapter-1/index.html
+	# If this is a page instead of a book section, hop on over
+	if( defined $_config{'page'}{'name'} ){ initPage(); return 1; }
+	
+	# Doing a concat so that we can handle unix or windows output paths. Also different if useindex: chapter-1.html or chapter-1/index.html
 	if( $_useindex == 1 ){
 	    my $__path;
 		if( $_config{'book'}{'chapter'} =~ /^[+-]?\d+$/ ){
@@ -126,8 +130,7 @@ sub initChapter {
 		
 		
 		
-		# If the path doesn't exist, try to create it
-		
+		# If the path doesn't exist, try to create it		
 		if( -d $__path ){ return 1; }
 		else{ mkpath $__path or die "Unable to create book directory $__path: $!"; }
 	}
@@ -159,9 +162,11 @@ sub moveFile {
 	my $__input = File::Spec->catfile(@_[0], @_[1]);
 	if( -d $__input ){ return; } 
 	
-	my $__newurl = "./";
-	if( $_config{'book'}{'url'} ne "" ){ $__newurl = $_config{'book'}{'url'}; }
-	else{ $__newurl = $_config{'author'}{'url'}; }
+	my $__newurl;
+	if( $_config{'book'}{'url'} ne "" ){ 		$__newurl = $_config{'book'}{'url'}; }
+	elsif( $_config{'author'}{'url'} ne "" ){ $__newurl = $_config{'author'}{'url'}; }
+	elsif( $_config{'page'}{'url'} ne "" ){ 	$__newurl = $_config{'page'}{'url'}; }
+	else{ $__newurl = "./"; }
 	
 	my ($__output, $__path);
 	if( lc($__input) =~ m/png|gif|jpg/ ){
@@ -188,6 +193,8 @@ sub writeChapter {
 	
 	# Make sure this is actually a chapter page, not an author page or something
 	if( $_config{'type'} eq 'author' ){ print "Skipping writeChapter, this is type $_config{'type'}\n"; return(); }
+	# If this is a page instead of a book section, hop on over
+	if( defined $_config{'page'}{'name'} ){ print "Skipping writeChapter, this is type $_config{'type'}\n"; writePage(); return; }
 	
 	open my $__fh, '<', $__bookfile or die "Error opening file $__bookfile: $!";
 	<$__fh>;
@@ -244,6 +251,7 @@ sub writeChapter {
 sub writeBook {
 	# Make sure this is actually a chapter page, not an author page or something
 	if( $_config{'type'} eq 'author' ){ print "Skipping writeBook, this is type $_config{'type'}\n"; return; }
+	if( defined $_config{'page'}{'name'} ){ print "Skipping writeBook, this is type $_config{'type'}\n"; return 1; }
 	
 	my $__bookfile = File::Spec->catfile($_config{'book'}{'url'},"index.html");
 	print "Now looping through chapters to print main book site\n";
@@ -270,9 +278,10 @@ sub writeBook {
 
 sub writeAuthor {
 	updateLibrary();
+	if( defined $_config{'page'}{'name'} ){ print "Skipping writeAuthor, this is type $_config{'type'}\n"; return 1; }
 	my $__authorfile = File::Spec->catfile($_config{'author'}{'url'},"index.html");
 	print "Now updating main author site\n";
-	print Dumper $_library{$_author};
+	#print Dumper $_library{$_author};
 	
 	# Stylesheet is presumed to be relative
 	print "Style = $_config{'stylesheet'}, author style = $_library{$_author}{'stylesheet'}\n";
@@ -286,6 +295,33 @@ sub writeAuthor {
 	my $__vars = { config => \%_config, author => \%{$_library{$_author}}, genres=> \%__genres, library => \%_library, date => $_date, style => $__style };
 	print "Writing to author site: $__authorfile\n";
 	$__template->process("author.tmpl", $__vars, $__authorfile) || die $__template->error();
+}
+
+sub initPage {
+	updateLibrary();
+	my $__path;
+	$__path = $_config{'page'}{'url'};
+	$_config{'page'}{'filename'} = File::Spec->catfile($__path, "index.html");
+	
+	# If the path doesn't exist, try to create it
+	if( -d $__path ){ return 1; }
+	else{ mkpath $__path or die "Unable to create page directory $__path: $!"; }	
+}
+
+sub writePage {
+	# This is for a complete, standalone page that might need access to the library data
+	# For example, a collection of authors, or an assortment of latest titles
+	
+	my $__pagefile = $_config{'page'}{'filename'};
+	print "Now updating page $_page\n";
+	print Dumper $_library{'pages'};
+	
+	my @__genres = keys %{$_library{'genres'}};
+	my $__style = $_config{'stylesheet'};
+	my $__template = Template->new();
+	my $__vars = { config => \%_config, library => \%_library, date => $_date, style => $__style, authors => \%{$_library{'authors'}}, genres => \@__genres };
+	print "Writing to site: $__pagefile\n";
+	$__template->process("$_type.tmpl", $__vars, $__pagefile) || die $__template->error();
 }
 
 sub getHTML {
@@ -429,7 +465,9 @@ sub readConfig {
 		if( defined $_config{'book'}{'blurb'} ){		$_blurb 		= $_config{'book'}{'blurb'}; }
 		if( defined $_config{'book'}{'metadata'} ){		$_metabook 		= $_config{'book'}{'metadata'}; }
 	}
-	
+	if( defined $_config{'page'} ){				
+		if( defined $_config{'page'}{'name'} ){			$_page			= $_config{'page'}{'name'}; }
+	}
 	# Set the full canonical for root stylesheet if it's not already set, and make sure that stylesheet uses stylepath if set
 	if( $_rootstyle =~ m/$_siteroot/ ){}
 	else{ $_config{'rootstyle'} = $_siteroot . $_stylepath . $_rootstyle; $_rootstyle = $_config{'rootstyle'}; }
@@ -502,34 +540,44 @@ sub updateLibrary {
 		$_library{$_author}{'related'} 					= $_config{'author'}{'related'};
 		$_library{$_author}{'about'} 					= $_about;
 		$_library{$_author}{'copyright'} 				= $_config{'author'}{'copyright'};
+		$_library{'authors'}{$_author}{'url'}			= $_config{'author'}{'url'};
+		$_library{'authors'}{$_author}{'portrait'}		= $_config{'author'}{'portrait'};
+		
 	}
 	if( $_config{'type'} ne 'author' ){
-		$_library{$_author}{'book'}{$_title}{'added'} 		= $_date;
-		$_library{$_author}{'book'}{$_title}{'author'} 		= $_author;
-		$_library{$_author}{'book'}{$_title}{'cover'} 		= $_cover;
-		$_library{$_author}{'book'}{$_title}{'title'} 		= $_title;
-		$_library{$_author}{'book'}{$_title}{'subtitle'} 	= $_subtitle;
-		$_library{$_author}{'book'}{$_title}{'genre1'} 		= $_genre1;
-		$_library{$_author}{'book'}{$_title}{'genre2'} 		= $_genre2;
-		$_library{$_author}{'book'}{$_title}{'genre3'} 		= $_genre3;
-		$_library{$_author}{'book'}{$_title}{'genre4'} 		= $_genre4;
-		$_library{$_author}{'book'}{$_title}{'fiction'} 	= $_fiction;
-		$_library{$_author}{'book'}{$_title}{'related'} 	= @_related;
-		$_library{$_author}{'book'}{$_title}{'copyright'} 	= $_copyright;
-		$_library{$_author}{'book'}{$_title}{'coverstyle'}	= $_config{'book'}{'coverstyle'};
-		$_library{$_author}{'book'}{$_title}{'blurb'} 		= $_blurb;
-		$_library{$_author}{'book'}{$_title}{'url'} 		= $_config{'book'}{'url'};
-		$_library{$_author}{'books'}{$_title}{'url'}		= $_config{'book'}{'url'};
-		$_library{$_author}{'books'}{$_title}{'hover'}		= $_config{'book'}{'hover'};
-		$_library{$_author}{'books'}{$_title}{'genre1'}		= $_config{'book'}{'genre1'};
+		$_library{$_author}{'book'}{$_title}{'added'} 						= $_date;
+		$_library{$_author}{'book'}{$_title}{'author'} 						= $_author;
+		$_library{$_author}{'book'}{$_title}{'cover'} 						= $_cover;
+		$_library{$_author}{'book'}{$_title}{'title'} 						= $_title;
+		$_library{$_author}{'book'}{$_title}{'subtitle'} 					= $_subtitle;
+		$_library{$_author}{'book'}{$_title}{'genre1'} 						= $_genre1;
+		$_library{$_author}{'book'}{$_title}{'genre2'} 						= $_genre2;
+		$_library{$_author}{'book'}{$_title}{'genre3'} 						= $_genre3;
+		$_library{$_author}{'book'}{$_title}{'genre4'} 						= $_genre4;
+		$_library{$_author}{'book'}{$_title}{'fiction'} 					= $_fiction;
+		$_library{$_author}{'book'}{$_title}{'related'} 					= @_related;
+		$_library{$_author}{'book'}{$_title}{'copyright'} 					= $_copyright;
+		$_library{$_author}{'book'}{$_title}{'coverstyle'}					= $_config{'book'}{'coverstyle'};
+		$_library{$_author}{'book'}{$_title}{'blurb'} 						= $_blurb;
+		$_library{$_author}{'book'}{$_title}{'url'} 						= $_config{'book'}{'url'};
+		$_library{$_author}{'books'}{$_title}{'url'}						= $_config{'book'}{'url'};
+		$_library{$_author}{'books'}{$_title}{'hover'}						= $_config{'book'}{'hover'};
+		$_library{$_author}{'books'}{$_title}{'genre1'}						= $_config{'book'}{'genre1'};
+		$_library{'genres'}{$_config{'book'}{'genre1'}}{$_title}{'url'}		= $_config{'book'}{'url'};
+		$_library{'genres'}{$_config{'book'}{'genre1'}}{$_title}{'cover'}	= $_cover;
 		if( defined $_config{'book'}{'link'} ){
 			# This is to allow off-site book links from the author page 
-			$_library{$_author}{'books'}{$_title}{'link'}	= $_config{'book'}{'link'};
-			print "Link = $_config{'book'}{'link'}\n";
+			$_library{$_author}{'books'}{$_title}{'link'}					= $_config{'book'}{'link'};
 		}
 		if( $_config{'book'}{'hover'} eq '' ){ $_library{$_author}{'books'}{$_title}{'hover'} = "$_title ($_genre1)"; }
 		
 		#print "Coverstyle = $_library{$_author}{'book'}{$_title}{'coverstyle'}\n";
+		if( defined $_config{'page'} ){
+			$_library{'pages'}{$_config{'page'}{'name'}}{'url'}				= $_config{'page'}{'url'};
+			if( defined $_config{'page'}{'link'} ){
+				$_library{'pages'}{$_config{'page'}{'name'}}{'link'}		= $_config{'page'}{'link'}; 
+			}
+		}
 	}
 
 	my $__json = encode_json \%_library;
