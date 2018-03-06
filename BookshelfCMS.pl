@@ -67,7 +67,7 @@ foreach my $dir ( @ARGV ){
 		foreach $file ( @files ){
 			# This will pass files and directories to moveFile if they are the right sort
 			my $path = File::Spec->catfile($dir, $file);
-			if( $file =~ m/.jpg|.gif|.png|css|image|style/ ){
+			if( $file =~ m/.jpg|.gif|.png|.svg|css|image|style/ ){
 				if( -d $path ){ moveDir($path); }
 				else{ moveFile($dir, $file); }
 			}
@@ -85,7 +85,7 @@ foreach my $dir ( @ARGV ){
 		foreach ( @ARGV ){
 			# This will pass files and directories to moveFile if they are the right sort
 			my $path = File::Spec->catfile($dir, $_);
-			if( $_ =~ m/.jpg|.gif|.png|css|image|style/ ){
+			if( $_ =~ m/.jpg|.gif|.png|.svg|css|image|style/ ){
 				if( -d $path ){ moveDir($path); }
 				else{ moveFile($dir, $_); }
 			}

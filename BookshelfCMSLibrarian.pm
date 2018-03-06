@@ -2,7 +2,6 @@ package BookshelfCMSLibrarian;
 
 # Bookshelf CMS is Copyright 2017 WereBooks Limited, and licensed for public use via the Apache License, Version 2.0
 # See: https://opensource.org/licenses/Apache-2.0 for the terms, or the project license file: https://github.com/WereBooks/alpha/blob/master/LICENSE
-# Replace "yoursite" and "yoursite.org" with your site
 use strict;
 use Exporter qw(import);
 use POSIX qw(strftime);
@@ -16,8 +15,8 @@ use Data::Dumper;
 # Maintains a JSON 'database' for the entire site structure and provides hooks for the bookshelf-cms.pl
 
 our $VERSION	= "0.00.01";
-our @ISA		= qw(Exporter);
-our @EXPORT		= qw(version debug libfile status author title subtitle chapter loadLibrary updateLibrary initChapter writeChapter writeBook writeAuthor getHTML getHeader getFooter setSiteroot setSite setSitecopy setLogo setImagepath setStylepath getStylesheet getMetadata getType getAuthor getTitle getSubtitle getChapter getSubchapter getDivider getGenre1 getGenre2 getGenre3 getGenre4 getRelated getFiction getCopyright getBlurb setTwitter useIndex moveFile moveDir);
+our @ISA	= qw(Exporter);
+our @EXPORT	= qw(version debug libfile status author title subtitle chapter loadLibrary updateLibrary initChapter writeChapter writeBook writeAuthor getHTML getHeader getFooter setSiteroot setSite setSitecopy setLogo setImagepath setStylepath getStylesheet getMetadata getType getAuthor getTitle getSubtitle getChapter getSubchapter getDivider getGenre1 getGenre2 getGenre3 getGenre4 getRelated getFiction getCopyright getBlurb setTwitter useIndex moveFile moveDir);
 
 # Semi-private vars
 our $_date			= strftime "%Y-%m-%d", localtime;
@@ -39,7 +38,7 @@ our $_author		= 'default-author';
 our $_about			= 'author bio';
 our $_authorport	= 'author.png';
 our $_twitter		= '@handle';
-our $_cover         = 'cover.png';
+our $_cover			= 'cover.png';
 our $_title			= 'default-book';
 our $_subtitle		= '';
 our $_chapter		= '1';
@@ -67,17 +66,17 @@ our $_page;
 
 # Blocks
 sub debug			{ $_debug		= uc($_[0]);	printf "DEBUG set to $_debug\n"; 			return $_debug;		}
-sub libfile			{ $_libfile		= $_[0];		printf "Libfile set to $_libfile\n";		return $_libfile;	}
+sub libfile			{ $_libfile		= $_[0];	printf "Libfile set to $_libfile\n";			return $_libfile;	}
 sub version			{ printf "BookshelfCMS Version: $VERSION\n";								return $VERSION;	}
 sub status			{ printf "Status: $_status\n";												return $_status;	}
-sub setSite			{ $_site		= $_[0];		printf "Site set to $_site\n";				return $_site;		}
-sub setLogo			{ $_logo		= $_[0];		printf "Logo set to $_logo\n";				return $_logo;		}
-sub setSitecopy		{ $_sitecopy	= $_[0];		printf "Site Copyright set to $_sitecopy\n";return $_sitecopy;	}
-sub setSiteroot		{ $_siteroot	= $_[0];		printf "Site Root set to $_siteroot\n";		return $_siteroot;	}
-sub setStylepath	{ $_stylepath	= $_[0];		printf "Stylepath set to $_stylepath\n";	return $_stylepath;	}
-sub setImagepath	{ $_imagepath	= $_[0];		printf "Imagepath set to $_imagepath\n";	return $_imagepath;	}
-sub setTwitter		{ $_twitter		= $_[0];		printf "Twitter set to $_twitter\n";		return $_twitter;	}
-sub useIndex		{ $_useindex	= $_[0];		printf "Use Index set to $_useindex\n";		return $_useindex;	}
+sub setSite			{ $_site		= $_[0];	printf "Site set to $_site\n";					return $_site;		}
+sub setLogo			{ $_logo		= $_[0];	printf "Logo set to $_logo\n";					return $_logo;		}
+sub setSitecopy		{ $_sitecopy	= $_[0];	printf "Site Copyright set to $_sitecopy\n";	return $_sitecopy;	}
+sub setSiteroot		{ $_siteroot	= $_[0];	printf "Site Root set to $_siteroot\n";			return $_siteroot;	}
+sub setStylepath	{ $_stylepath	= $_[0];	printf "Stylepath set to $_stylepath\n";		return $_stylepath;	}
+sub setImagepath	{ $_imagepath	= $_[0];	printf "Imagepath set to $_imagepath\n";		return $_imagepath;	}
+sub setTwitter		{ $_twitter		= $_[0];	printf "Twitter set to $_twitter\n";			return $_twitter;	}
+sub useIndex		{ $_useindex	= $_[0];	printf "Use Index set to $_useindex\n";			return $_useindex;	}
 sub getRootstyle	{ return $_rootstyle; 	}
 sub getStylesheet	{ return $_stylesheet; 	}
 sub getMetadata		{ return $_metadata; 	}
@@ -164,12 +163,12 @@ sub moveFile {
 	
 	my $__newurl;
 	if( $_config{'book'}{'url'} ne "" ){ 		$__newurl = $_config{'book'}{'url'}; }
-	elsif( $_config{'author'}{'url'} ne "" ){ $__newurl = $_config{'author'}{'url'}; }
+	elsif( $_config{'author'}{'url'} ne "" ){ 	$__newurl = $_config{'author'}{'url'}; }
 	elsif( $_config{'page'}{'url'} ne "" ){ 	$__newurl = $_config{'page'}{'url'}; }
 	else{ $__newurl = "./"; }
 	
 	my ($__output, $__path);
-	if( lc($__input) =~ m/png|gif|jpg/ ){
+	if( lc($__input) =~ m/png|gif|jpg|svg/ ){
 		$__path = File::Spec->catfile($__newurl, $_config{'imagepath'});
 		$__output = File::Spec->catfile($__path, @_[1]);
 		if( -d $__path ){} 
@@ -192,9 +191,8 @@ sub writeChapter {
 	initChapter($__bookfile);
 	
 	# Make sure this is actually a chapter page, not an author page or something
-	if( $_config{'type'} eq 'author' ){ print "Skipping writeChapter, this is type $_config{'type'}\n"; return(); }
-	# If this is a page instead of a book section, hop on over
-	if( defined $_config{'page'}{'name'} ){ print "Skipping writeChapter, this is type $_config{'type'}\n"; writePage(); return; }
+	if( $_config{'type'} eq 'author' ){ print "Skipping writeChapter, this is type $_config{'type'}\n"; return; }
+	
 	
 	open my $__fh, '<', $__bookfile or die "Error opening file $__bookfile: $!";
 	<$__fh>;
@@ -202,6 +200,14 @@ sub writeChapter {
 		my $__story = getHTML($_);
 		#print $__story;
 		$__body = $__body . $__story;
+	}
+	
+	# If this is a page instead of a book section, we skip out here
+	if( defined $_config{'page'}{'name'} ){ 
+		$_config{'page'}{'body'} = $__body; 
+		print "Skipping writeChapter, this is type $_config{'type'}\n"; 
+		writePage(); 
+		return; 
 	}
 	
 	$_config{'book'}{'body'} = $__body;
@@ -315,6 +321,7 @@ sub writePage {
 	my $__pagefile = $_config{'page'}{'filename'};
 	print "Now updating page $_page\n";
 	print Dumper $_library{'pages'};
+	print Dumper $_config{'page'};
 	
 	my @__genres = keys %{$_library{'genres'}};
 	my $__style = $_config{'stylesheet'};
@@ -326,7 +333,7 @@ sub writePage {
 
 sub getHTML {
 	# Skip lines wrapped in HTML tags
-	if( $_ =~ m/^</ ){}
+	if( $_ =~ m/^\s*</ ){}
 	else{ s/^/<p>/g; }
 	if( $_ =~ m/\r/ ){ s/\r/<\/p>/g; }
 	elsif( $_ =~ m/^*>$/ ){}
